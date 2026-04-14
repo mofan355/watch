@@ -1,34 +1,62 @@
 #include "stm32f10x.h"                  // Device header
 #include "Delay.h"
 
+uint8_t Key_Num = 0;
+
 void Key_Init(void)
 {
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	
 	GPIO_InitTypeDef GPIO_InitStructure;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_11;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_6;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
 uint8_t Key_GetNum(void)
 {
-	uint8_t KeyNum = 0;
+	if (Key_Num)
+	{
+		uint8_t temp=0;
+		temp=Key_Num;
+		Key_Num=0;
+		return temp;
+	}
+	else return 0;
+	
+}
+
+uint8_t Key_GetState(void)
+{
 	if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_1) == 0)
 	{
-		Delay_ms(20);
-		while (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_1) == 0);
-		Delay_ms(20);
-		KeyNum = 1;
+		return 1;
 	}
-	if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_11) == 0)
+	else if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_6) == 0)
 	{
-		Delay_ms(20);
-		while (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_11) == 0);
-		Delay_ms(20);
-		KeyNum = 2;
+		return 2;
 	}
-	
-	return KeyNum;
+	else if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0)
+	{
+		return 3;
+	}
+	else return 0;
 }
+
+void Key_Tick(void)
+{
+	static uint8_t CurrentSta,PreSta;
+
+	PreSta = CurrentSta;
+	CurrentSta = Key_GetState();
+	if(PreSta!=0&&CurrentSta==0)
+	{
+		Key_Num = PreSta;
+	}
+}
+

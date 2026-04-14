@@ -7,7 +7,8 @@
                 "e:\\code_embadded\\STM32-WATCH-main\\Keil完整代码\\watch\\Library",
                 "e:\\code_embadded\\STM32-WATCH-main\\Keil完整代码\\watch\\User",
                 "e:\\code_embadded\\STM32-WATCH-main\\Keil完整代码\\watch\\System",
-                "e:\\code_embadded\\STM32-WATCH-main\\Keil完整代码\\watch\\Hardware"
+                "e:\\code_embadded\\STM32-WATCH-main\\Keil完整代码\\watch\\Hardware",
+                "e:\\code_embadded\\STM32-WATCH-main\\Keil完整代码\\watch"
             ],
             "defines": [
                 "USE_STDPERIPH_DRIVER",

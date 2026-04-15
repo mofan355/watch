@@ -4,6 +4,7 @@
 #include "OLED.h"
 #include "Key.h"
 #include "LED.h"
+#include "SetTime.h"
 
 uint8_t KeyNum = 0;
 
@@ -102,7 +103,11 @@ void SettingPage(void)
         }
 
         if(settingflag_temp==1) {return;}
-        else if(settingflag_temp==2) {}
+        else if(settingflag_temp==2) 
+        {
+            SetTimePage();
+            settingflag_temp=0;
+        }
 
         switch(settingflag)
         {
@@ -120,4 +125,165 @@ void SettingPage(void)
                 break;
         }
     }
+}
+
+int menu_flag=1;
+uint8_t move_flag=1;
+uint8_t pre_Selection;
+uint8_t new_Selection;
+uint8_t x_pre=48;
+uint8_t Speed=4;
+void Menu(void)
+{
+    uint8_t menu_flag_temp=0;
+    uint8_t DirectFlag=2;
+    while(1)
+    { 
+        KeyNum = Key_GetNum();
+        
+        if(KeyNum == 1)//上一项
+        {
+            menu_flag--;
+            DirectFlag=1;
+            move_flag=1;
+            if(menu_flag<1) menu_flag=7;
+        }
+        else if(KeyNum == 2)//下一项
+        {
+            menu_flag++;
+            DirectFlag=2;
+            move_flag=1;
+            if(menu_flag>7) menu_flag=1;
+        }
+        else if(KeyNum == 3)//确定
+        {
+            OLED_Clear();
+            OLED_Update();
+            menu_flag_temp=menu_flag;
+        }
+
+        /*
+        if(menu_flag_temp==1) {return;}
+        else if(menu_flag_temp==2) 
+        {
+            
+            menu_flag_temp=0;
+        }
+        else if(menu_flag_temp==3) 
+        {
+            
+            menu_flag_temp=0;
+        }
+        else if(menu_flag_temp==4) 
+        {
+            
+            menu_flag_temp=0;
+        }
+        else if(menu_flag_temp==5) 
+        {
+            
+            menu_flag_temp=0;
+        }
+        else if(menu_flag_temp==6) 
+        {
+            
+            menu_flag_temp=0;
+        }
+        else if(menu_flag_temp==7) 
+        {
+            
+            menu_flag_temp=0;
+        }*/
+        
+        if(menu_flag==1&&DirectFlag==2) Set_Selection(move_flag,6,0);
+        else if(menu_flag==7&&DirectFlag==1) Set_Selection(move_flag,0,6);
+        else 
+        {
+            if(DirectFlag==1) Set_Selection(move_flag,menu_flag,menu_flag-1);
+            else if(DirectFlag==2) Set_Selection(move_flag,menu_flag-2,menu_flag-1);
+        }
+        
+    }
+}
+
+void Set_Selection(uint8_t move_flag,uint8_t Pre_Selection,uint8_t New_Selection)
+{
+    if(move_flag==1)
+    {
+        pre_Selection=Pre_Selection;
+        new_Selection=New_Selection;
+    }
+
+    Menu_Animation();
+}
+
+void Menu_Animation(void)
+{
+    OLED_Clear();
+    OLED_ShowImage(42,10,44,44,Frame);
+
+    if(pre_Selection>new_Selection)
+    {
+        if(pre_Selection==6&&new_Selection==0)
+        {
+            x_pre-=Speed;
+            if(x_pre==0)
+            {
+                x_pre=48;
+                move_flag=0;
+                //更新pre_Selection
+                pre_Selection=0;
+            }
+        }
+        else 
+        {
+            x_pre+=Speed;
+            if(x_pre==96)
+            {
+                x_pre=48;
+                move_flag=0;
+                //更新pre_Selection
+                --pre_Selection;
+            }
+        }
+    }
+
+    if(pre_Selection<new_Selection)
+    {
+        if(pre_Selection==0&&new_Selection==6)
+        {
+            x_pre+=Speed;
+            if(x_pre==96)
+            {
+                x_pre=48;
+                move_flag=0;
+                //更新pre_Selection
+                pre_Selection=6;
+            }
+        }
+        else 
+        {
+           x_pre-=Speed;
+           if(x_pre==0)
+            {
+                x_pre=48;
+                move_flag=0;
+                //更新pre_Selection
+                ++pre_Selection;
+            } 
+        }
+        
+    }
+
+    int temp1=pre_Selection-2;
+    int temp2=pre_Selection-1;
+    OLED_ShowImage(x_pre-96,16,32,32,
+        Menu_Graph[(temp1>=0)?temp1:7+temp1]);
+    OLED_ShowImage(x_pre-48,16,32,32,
+        Menu_Graph[(temp2>=0)?temp2:7+temp2]);
+    OLED_ShowImage(x_pre,16,32,32,Menu_Graph[pre_Selection]);
+    OLED_ShowImage(x_pre+48,16,32,32,Menu_Graph[(pre_Selection+1)%7]);
+    OLED_ShowImage(x_pre+96,16,32,32,Menu_Graph[(pre_Selection+2)%7]);
+	
+	OLED_Update();
 }

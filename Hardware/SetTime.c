@@ -9,6 +9,7 @@ uint8_t KeyNum_SetTime = 1;
 
 void Show_SetTimePage_FirstUI(void)
 {
+    OLED_Clear();
     OLED_ShowImage(0,0,16,16,Return);
     OLED_Printf(0,16,OLED_8X16,"年:%4d",MyRTC_Time[0]);
     OLED_Printf(0,32,OLED_8X16,"月:%2d",MyRTC_Time[1]);
@@ -16,9 +17,10 @@ void Show_SetTimePage_FirstUI(void)
 }
 void Show_SetTimePage_SecondUI(void)
 {
-    OLED_Printf(0,16,OLED_8X16,"时:%2d",MyRTC_Time[3]);
-    OLED_Printf(0,32,OLED_8X16,"分:%2d",MyRTC_Time[4]);
-    OLED_Printf(0,48,OLED_8X16,"秒:%2d",MyRTC_Time[5]);
+    OLED_Clear();
+    OLED_Printf(0,0,OLED_8X16,"时:%2d",MyRTC_Time[3]);
+    OLED_Printf(0,16,OLED_8X16,"分:%2d",MyRTC_Time[4]);
+    OLED_Printf(0,32,OLED_8X16,"秒:%2d",MyRTC_Time[5]);
 }
 
 void ChangeRTC_Time(uint8_t i,uint8_t flag)
@@ -258,12 +260,12 @@ void SetTimePage(void)
         }
 
         if(setTimeflag_temp==1) {return;}
-        else if(setTimeflag_temp==2) {SetYear();}
-        else if(setTimeflag_temp==3) {SetMonth();}
-        else if(setTimeflag_temp==4) {SetDay();}
-        else if(setTimeflag_temp==5) {SetHour();}
-        else if(setTimeflag_temp==6) {SetMinute();}
-        else if(setTimeflag_temp==7) {SetSecond();}
+        else if(setTimeflag_temp==2) {SetYear();setTimeflag_temp=0;}
+        else if(setTimeflag_temp==3) {SetMonth();setTimeflag_temp=0;}
+        else if(setTimeflag_temp==4) {SetDay();setTimeflag_temp=0;}
+        else if(setTimeflag_temp==5) {SetHour();setTimeflag_temp=0;}
+        else if(setTimeflag_temp==6) {SetMinute();setTimeflag_temp=0;}
+        else if(setTimeflag_temp==7) {SetSecond();setTimeflag_temp=0;}
 
         switch(setTimeflag)
         {
@@ -289,17 +291,17 @@ void SetTimePage(void)
                 break;
             case 5:
                 Show_SetTimePage_SecondUI();
-                OLED_ReverseArea(0,64,16,16);
+                OLED_ReverseArea(0,0,16,16);
                 OLED_Update();
                 break;
             case 6:
                 Show_SetTimePage_SecondUI();
-                OLED_ReverseArea(0,80,16,16);
+                OLED_ReverseArea(0,16,16,16);
                 OLED_Update();
                 break;
             case 7:
                 Show_SetTimePage_SecondUI();
-                OLED_ReverseArea(0,96,16,16);
+                OLED_ReverseArea(0,32,16,16);
                 OLED_Update();
                 break;
             default:

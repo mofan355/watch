@@ -13,11 +13,11 @@ int main(void)
 	Peripheral_Init();
 	Timer_Init();
 
-	int clkflag1=First_Page_Clock();
-	
+	int clkflag1;  
 	while (1)
 	{
-		if(clkflag1==1){}
+		clkflag1=First_Page_Clock();
+		if(clkflag1==1){Menu();}
 		else if(clkflag1==2){SettingPage();}
 	}
 }

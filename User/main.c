@@ -4,6 +4,7 @@
 #include "MyRTC.h"
 #include "menu.h"
 #include "Timer.h"
+#include "Key.h"
 
 int main(void)
 {
@@ -19,5 +20,14 @@ int main(void)
 		clkflag1=First_Page_Clock();
 		if(clkflag1==1){Menu();}
 		else if(clkflag1==2){SettingPage();}
+	}
+}
+void TIM2_IRQHandler(void)
+{
+	if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
+	{
+		Key_Tick();
+		StopWatch_Tick();
+		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	}
 }

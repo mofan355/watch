@@ -1,5 +1,4 @@
 #include "stm32f10x.h"                  // Device header
-#include "Key.h"
 
 void Timer_Init(void)
 {
@@ -10,7 +9,7 @@ void Timer_Init(void)
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
 	TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
 	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseInitStructure.TIM_Period = 1000 - 1;
+	TIM_TimeBaseInitStructure.TIM_Period = 100 - 1;
 	TIM_TimeBaseInitStructure.TIM_Prescaler = 7200 - 1;
 	TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
 	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStructure);
@@ -29,14 +28,3 @@ void Timer_Init(void)
 	
 	TIM_Cmd(TIM2, ENABLE);
 }
-
-
-void TIM2_IRQHandler(void)
-{
-	if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
-	{
-		Key_Tick();
-		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	}
-}
-

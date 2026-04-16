@@ -310,7 +310,7 @@ void MoveToFunction(void)
 }
 
 uint8_t StopWatch_flag=0;
-uint8_t preStopWatch_flag=0;
+uint8_t BackStopWatch_flag=0;//控制是否后台计时
 uint8_t hour=0,minute=0,second=0;
 
 void StopWatch_Tick(void)
@@ -323,7 +323,7 @@ void StopWatch_Tick(void)
         minute=0;
         second=0;
     }
-    if((StopWatch_flag==2||StopWatch_flag==1)&&preStopWatch_flag!=3&&preStopWatch_flag!=4)
+    if(StopWatch_flag==2||StopWatch_flag==1&&BackStopWatch_flag==1)
     {
         if(++count>100)
         {
@@ -369,9 +369,10 @@ void StopWatch(void)
         }
         else if(KeyNum==3)
         {
-            preStopWatch_flag=StopWatch_flag;
             StopWatch_flag=StopWatchFlag_temp;
             if(StopWatch_flag==1) return;
+            if(StopWatch_flag==2) BackStopWatch_flag=1;
+            if(StopWatch_flag==3||StopWatch_flag==4) BackStopWatch_flag=0;
         }
 
         switch(StopWatchFlag_temp)

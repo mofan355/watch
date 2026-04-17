@@ -14,5 +14,8 @@ void Show_StopWatch_UI(void);
 void StopWatch_Tick(void);
 void Show_LED_UI(void);
 void LED(void);
+void MPU6050(void);
+void MPU6050_Calculation(void);
+void Show_MPU6050_UI(void);
 
 #endif

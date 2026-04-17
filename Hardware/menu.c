@@ -5,6 +5,9 @@
 #include "Key.h"
 #include "LED.h"
 #include "SetTime.h"
+#include "Delay.h"
+#include "MPU6050.h"
+#include "math.h"
 
 uint8_t KeyNum = 0;
 
@@ -13,6 +16,7 @@ void Peripheral_Init(void)
     MyRTC_Init();
     Key_Init();
     LED_Init();
+    MPU6050_Init();
 }
 
 void Show_Clock_UI(void)
@@ -159,46 +163,40 @@ void Menu(void)
         {
             OLED_Clear();
             OLED_Update();
-            menu_flag=menu_flag_temp;
-        }
 
-        if(menu_flag==1) 
-        {
-            MoveToFunction();
-            menu_flag=0;
-            return;
-        }
-        else if(menu_flag==2) 
-        {
-            MoveToFunction();
-            StopWatch();
-            menu_flag=0;
-        }
-        else if(menu_flag==3) 
-        {
-            MoveToFunction();
-            LED();
-            menu_flag=0;
-        }
-        else if(menu_flag==4) 
-        {
-            
-            menu_flag=0;
-        }
-        else if(menu_flag==5) 
-        {
-            
-            menu_flag=0;
-        }
-        else if(menu_flag==6) 
-        {
-            
-            menu_flag=0;
-        }
-        else if(menu_flag==7) 
-        {
-            
-            menu_flag=0;
+            menu_flag=menu_flag_temp;
+            if(menu_flag==1) 
+            {
+                MoveToFunction();
+                return;
+            }
+            else if(menu_flag==2) 
+            {
+                MoveToFunction();
+                StopWatch();
+            }
+            else if(menu_flag==3) 
+            {
+                MoveToFunction();
+                LED();
+            }
+            else if(menu_flag==4) 
+            {
+                MoveToFunction();
+                MPU6050();
+            }
+            else if(menu_flag==5) 
+            {
+                
+            }
+            else if(menu_flag==6) 
+            {
+                
+            }
+            else if(menu_flag==7) 
+            {
+                
+            }
         }
         
         if(menu_flag_temp==1&&DirectFlag==2) Set_Selection(move_flag,6,0);
@@ -460,5 +458,104 @@ void LED(void)
             default:
                 break;
         }
+    }
+}
+
+#define PI 3.141592653f
+#define RAD_TO_DEG 57.29578f //角度转弧度系数
+
+#define ACCEL_SENSITIVITY 2048.0f
+#define GYRO_SENSITIVITY  16.4f
+
+float Roll  = 0;  // X 轴
+float Pitch = 0;  // Y 轴
+float Yaw   = 0;  // Z 轴 
+float Delta_t = 0.005f;  // 5ms 采样周期
+float Kp = 0.1f;         // 滤波系数
+
+
+void Show_MPU6050_UI(void)
+{
+    OLED_ShowImage(0,0,16,16,Return);
+	OLED_Printf(0,16,OLED_8X16,"Roll: %.2f",Roll);
+	OLED_Printf(0,32,OLED_8X16,"Pitch:%.2f",Pitch);
+	OLED_Printf(0,48,OLED_8X16,"Yaw:  %.2f",Yaw);
+}
+
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
+float ax_f, ay_f, az_f;
+float gx_f, gy_f, gz_f;
+float pitch_a, roll_a;
+
+void MPU6050_Calculation(void)
+{
+    Delay_ms(5);
+    
+
+	// 1. 读取数据
+	MPU6050_GetData(&ax, &ay, &az, &gx, &gy, &gz);
+
+	// 2. 单位转换
+	ax_f = (float)ax / ACCEL_SENSITIVITY;
+	ay_f = (float)ay / ACCEL_SENSITIVITY;
+	az_f = (float)az / ACCEL_SENSITIVITY;
+
+	gx_f = (float)gx / GYRO_SENSITIVITY;
+	gy_f = (float)gy / GYRO_SENSITIVITY;
+	gz_f = (float)gz / GYRO_SENSITIVITY;
+
+    // 解决Yaw自增
+    if(-8.5<gz_f&&gz_f<0)
+    {
+        gz_f = 0;
+    }
+    if(gz_f<0) gz_f+=8.5;
+    if(gz_f>0) gz_f*=2;
+
+    // 3. 陀螺仪积分
+    Roll  += gx_f * Delta_t;   // X 轴
+	Pitch += gy_f * Delta_t;   // Y 轴
+	Yaw   += gz_f * Delta_t;   // Z 轴
+
+    // 4. 加速度计计算（只能算 X/Y 轴）,atan2 (对边，邻边) → 输出【倾斜的弧度】
+    pitch_a = atan2(-ax_f, sqrt(ay_f*ay_f + az_f*az_f)) * RAD_TO_DEG;
+	roll_a  = atan2(ay_f, az_f) * RAD_TO_DEG;
+
+    // 5. 互补滤波（稳定 X/Y 轴）
+    Roll  = Roll  * (1-Kp) + roll_a  * Kp;
+	Pitch = Pitch * (1-Kp) + pitch_a * Kp;
+}
+
+void Show_MPU6050_InitialData(void)
+{
+    MPU6050_GetData(&ax, &ay, &az, &gx, &gy, &gz);
+    OLED_ShowSignedNum(1, 16, ax, 5,OLED_8X16);					//OLED显示数据
+	OLED_ShowSignedNum(1, 32, ay, 5,OLED_8X16);
+	OLED_ShowSignedNum(1, 48, az, 5,OLED_8X16);
+	OLED_ShowSignedNum(72, 16, gx, 5,OLED_8X16);
+	OLED_ShowSignedNum(72, 32, gy, 5,OLED_8X16);
+	OLED_ShowSignedNum(72, 48, gz, 5,OLED_8X16);
+    OLED_Update();
+}
+
+void MPU6050(void)
+{
+    while(1)
+    {
+        KeyNum=Key_GetNum();
+        if(KeyNum==3)
+        {
+            OLED_Clear();
+            OLED_Update();
+            return;
+        }
+
+        OLED_Clear();
+        // Show_MPU6050_InitialData();
+        MPU6050_Calculation();
+        Show_MPU6050_UI();
+        OLED_ReverseArea(0,0,16,16);
+        OLED_Update();
     }
 }

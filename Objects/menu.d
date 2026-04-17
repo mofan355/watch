@@ -35,3 +35,6 @@
 .\objects\menu.o: Hardware\Key.h
 .\objects\menu.o: Hardware\LED.h
 .\objects\menu.o: Hardware\SetTime.h
+.\objects\menu.o: .\System\Delay.h
+.\objects\menu.o: Hardware\MPU6050.h
+.\objects\menu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

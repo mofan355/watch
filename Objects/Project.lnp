@@ -36,6 +36,7 @@
 ".\objects\settime.o"
 ".\objects\mpu6050.o"
 ".\objects\myi2c.o"
+".\objects\ad.o"
 ".\objects\dino.o"
 ".\objects\main.o"
 ".\objects\stm32f10x_it.o"

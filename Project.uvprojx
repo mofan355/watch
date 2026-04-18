@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Start;.\Library;.\User;.\System;.\Hardware</IncludePath>
+              <IncludePath>.\Start;.\Library;.\User;.\System;.\Hardware;.\Game</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -769,6 +769,21 @@
               <FileName>MyI2C.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Hardware\MyI2C.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Game</GroupName>
+          <Files>
+            <File>
+              <FileName>dino.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Game\dino.c</FilePath>
+            </File>
+            <File>
+              <FileName>dino.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Game\dino.h</FilePath>
             </File>
           </Files>
         </Group>

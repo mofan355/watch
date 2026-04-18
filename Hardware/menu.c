@@ -8,6 +8,7 @@
 #include "Delay.h"
 #include "MPU6050.h"
 #include "math.h"
+#include "dino.h"
 
 uint8_t KeyNum = 0;
 
@@ -187,15 +188,18 @@ void Menu(void)
             }
             else if(menu_flag==5) 
             {
-                
+                MoveToFunction();
+                SelectGame();
             }
             else if(menu_flag==6) 
             {
-                
+                MoveToFunction();
+                Emoji();
             }
             else if(menu_flag==7) 
             {
-                
+                MoveToFunction();
+                Gradienter();
             }
         }
         
@@ -461,7 +465,7 @@ void LED(void)
     }
 }
 
-#define PI 3.141592653f
+double PI=3.141592653f;
 #define RAD_TO_DEG 57.29578f //角度转弧度系数
 
 #define ACCEL_SENSITIVITY 2048.0f
@@ -557,5 +561,117 @@ void MPU6050(void)
         Show_MPU6050_UI();
         OLED_ReverseArea(0,0,16,16);
         OLED_Update();
+    }
+}
+
+uint8_t game_flag=0;
+uint8_t SelectionCount=2;
+void SelectGame(void)
+{
+    uint8_t game_flag_temp=1;
+    while(1)
+    {
+        KeyNum=Key_GetNum();
+        if(KeyNum==1)
+        {
+            game_flag_temp--;
+            if(game_flag_temp<1) game_flag_temp=SelectionCount;
+        }
+        if(KeyNum==2)
+        {
+            game_flag_temp++;
+            if(game_flag_temp>SelectionCount) game_flag_temp=1;
+        }
+        else if(KeyNum==3)
+        {
+            game_flag=game_flag_temp;
+            if(game_flag==1) return;
+            else if(game_flag==2) 
+            {
+                DinoGame_Pos_Init();
+                DinoGame();
+            }
+        }
+
+        switch(game_flag_temp)
+        {
+            case 1:
+                Show_SelectGame_UI();
+                OLED_ReverseArea(0,0,16,16);
+                OLED_Update();
+                break;
+            case 2:
+                Show_SelectGame_UI();
+                OLED_ReverseArea(0,16,48,16);
+                OLED_Update();
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+void Show_SelectGame_UI(void)
+{
+    OLED_Clear();
+    OLED_ShowImage(0,0,16,16,Return);
+    OLED_ShowString(0,16,"小恐龙",OLED_8X16);
+}
+
+void Show_Emoji_UI(void)
+{
+    for(uint8_t i=0;i<3;i++)
+    {
+        OLED_Clear();
+        OLED_ShowImage(30,10+i,16,16,Eyebrow[0]);
+        OLED_ShowImage(82,10+i,16,16,Eyebrow[1]);
+        OLED_DrawEllipse(40,32,6,6-i,1);
+        OLED_DrawEllipse(88,32,6,6-i,1);
+        OLED_ShowImage(54,40,20,20,Mouth);
+        OLED_Update();
+        Delay_ms(100);
+    }
+    for(uint8_t i=0;i<3;i++)
+    {
+        OLED_Clear();
+        OLED_ShowImage(30,12-i,16,16,Eyebrow[0]);
+        OLED_ShowImage(82,12-i,16,16,Eyebrow[1]);
+        OLED_DrawEllipse(40,32,6,4+i,1);
+        OLED_DrawEllipse(88,32,6,4+i,1);
+        OLED_ShowImage(54,40,20,20,Mouth);
+        OLED_Update();
+        Delay_ms(100);
+    }
+    Delay_ms(500);
+}
+
+
+void Emoji(void)
+{
+    while(1)
+    {
+        KeyNum=Key_GetNum();
+        if(KeyNum==3) return;
+        Show_Emoji_UI();
+    }
+}
+
+//水平仪
+void Show_Gradienter_UI(void)
+{
+    MPU6050_Calculation();
+    OLED_Clear();
+	OLED_DrawCircle(64,32,30,0);
+    OLED_DrawCircle(64-Roll,32+Pitch,4,1);
+    OLED_Update();
+}
+
+void Gradienter(void)
+{
+    while(1)
+    {
+        KeyNum=Key_GetNum();
+        if(KeyNum==3) return;
+        Show_Gradienter_UI();
     }
 }

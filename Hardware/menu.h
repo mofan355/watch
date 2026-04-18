@@ -17,5 +17,10 @@ void LED(void);
 void MPU6050(void);
 void MPU6050_Calculation(void);
 void Show_MPU6050_UI(void);
-
+void Show_SelectGame_UI(void);
+void SelectGame(void);
+void Emoji(void);
+void Show_Emoji_UI(void);
+void Show_Gradienter_UI(void);
+void Gradienter(void);
 #endif

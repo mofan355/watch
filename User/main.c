@@ -5,6 +5,7 @@
 #include "menu.h"
 #include "Timer.h"
 #include "Key.h"
+#include "dino.h"
 
 int main(void)
 {
@@ -13,7 +14,6 @@ int main(void)
 
 	Peripheral_Init();
 	Timer_Init();
-
 	int clkflag1;  
 	while (1)
 	{
@@ -22,12 +22,13 @@ int main(void)
 		else if(clkflag1==2){SettingPage();}
 	}
 }
-void TIM2_IRQHandler(void)
+void TIM2_IRQHandler(void)//10ms触发一次
 {
 	if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
 	{
 		Key_Tick();
 		StopWatch_Tick();
+		Dino_Tick();
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	}
 }

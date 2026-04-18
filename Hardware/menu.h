@@ -23,4 +23,5 @@ void Emoji(void);
 void Show_Emoji_UI(void);
 void Show_Gradienter_UI(void);
 void Gradienter(void);
+void Show_Battery(void);
 #endif

@@ -9,6 +9,7 @@
 #include "MPU6050.h"
 #include "math.h"
 #include "dino.h"
+#include "AD.h"
 
 uint8_t KeyNum = 0;
 
@@ -18,6 +19,44 @@ void Peripheral_Init(void)
     Key_Init();
     LED_Init();
     MPU6050_Init();
+	AD_Init();
+}
+
+/*
+锂电池输入电压最高为4.1v时
+设定ad检测到的电压范围为2.6~3.3v
+*/
+float VBAT;//电池电压
+int Battery_level;//电量
+void Show_Battery(void)
+{
+    uint16_t ADValue=0;
+    int sum=0;
+    for(uint16_t i=0;i<3000;i++)
+    {
+        sum+=AD_GetValue();
+    }
+    ADValue=sum/3000;
+    VBAT=(float)ADValue/4095*3.3;
+    Battery_level=(ADValue-3276)*100/819;
+    if(Battery_level<0) Battery_level=0;
+    OLED_ShowNum(85,4,Battery_level,3,OLED_6X8);
+    OLED_ShowChar(103,4,'%',OLED_6X8);
+
+    if(Battery_level==100)OLED_ShowImage(110,0,16,16,Battery);
+	else if(Battery_level>=10&&Battery_level<100)
+	{
+		OLED_ShowImage(110,0,16,16,Battery);
+		OLED_ClearArea((112+Battery_level/10),5,(10-Battery_level/10),6);
+		OLED_ClearArea(85,4,6,8);
+	}
+	
+	else
+	{
+		OLED_ShowImage(110,0,16,16,Battery);
+		OLED_ClearArea(112,5,10,6);
+		OLED_ClearArea(85,4,12,8);
+	}
 }
 
 void Show_Clock_UI(void)
@@ -27,6 +66,7 @@ void Show_Clock_UI(void)
     OLED_Printf(16,16,OLED_12X24,"%02d:%02d:%02d",MyRTC_Time[3],MyRTC_Time[4],MyRTC_Time[5]);
     OLED_ShowString(0,48,"菜单",OLED_8X16);
     OLED_ShowString(96,48,"设置",OLED_8X16);
+    Show_Battery();
 }
 
 /*
@@ -53,6 +93,12 @@ int First_Page_Clock(void)
             OLED_Clear();
             OLED_Update();
             return clkflag;
+        }
+        else if(KeyNum==4)
+        {
+            //关机
+            GPIO_SetBits(GPIOB, GPIO_Pin_12);
+            GPIO_ResetBits(GPIOB, GPIO_Pin_13);
         }
 
         switch(clkflag)
@@ -201,6 +247,12 @@ void Menu(void)
                 MoveToFunction();
                 Gradienter();
             }
+        }
+        else if(KeyNum==4)
+        {
+            //关机
+            GPIO_SetBits(GPIOB, GPIO_Pin_12);
+            GPIO_ResetBits(GPIOB, GPIO_Pin_13);
         }
         
         if(menu_flag_temp==1&&DirectFlag==2) Set_Selection(move_flag,6,0);
@@ -376,6 +428,12 @@ void StopWatch(void)
             if(StopWatch_flag==2) BackStopWatch_flag=1;
             if(StopWatch_flag==3||StopWatch_flag==4) BackStopWatch_flag=0;
         }
+        else if(KeyNum==4)
+        {
+            //关机
+            GPIO_SetBits(GPIOB, GPIO_Pin_12);
+            GPIO_ResetBits(GPIOB, GPIO_Pin_13);
+        }
 
         switch(StopWatchFlag_temp)
         {
@@ -432,6 +490,12 @@ void LED(void)
         else if(KeyNum==3)
         {
             LEDflag=LEDflag_temp;
+        }
+        else if(KeyNum==4)
+        {
+            //关机
+            GPIO_SetBits(GPIOB, GPIO_Pin_12);
+            GPIO_ResetBits(GPIOB, GPIO_Pin_13);
         }
 
         if(LEDflag==1)
@@ -554,6 +618,12 @@ void MPU6050(void)
             OLED_Update();
             return;
         }
+        else if(KeyNum==4)
+        {
+            //关机
+            GPIO_SetBits(GPIOB, GPIO_Pin_12);
+            GPIO_ResetBits(GPIOB, GPIO_Pin_13);
+        }
 
         OLED_Clear();
         // Show_MPU6050_InitialData();
@@ -591,6 +661,12 @@ void SelectGame(void)
                 DinoGame_Pos_Init();
                 DinoGame();
             }
+        }
+        else if(KeyNum==4)
+        {
+            //关机
+            GPIO_SetBits(GPIOB, GPIO_Pin_12);
+            GPIO_ResetBits(GPIOB, GPIO_Pin_13);
         }
 
         switch(game_flag_temp)
@@ -652,6 +728,12 @@ void Emoji(void)
     {
         KeyNum=Key_GetNum();
         if(KeyNum==3) return;
+        else if(KeyNum==4)
+        {
+            //关机
+            GPIO_SetBits(GPIOB, GPIO_Pin_12);
+            GPIO_ResetBits(GPIOB, GPIO_Pin_13);
+        }
         Show_Emoji_UI();
     }
 }
@@ -672,6 +754,12 @@ void Gradienter(void)
     {
         KeyNum=Key_GetNum();
         if(KeyNum==3) return;
+        else if(KeyNum==4)
+        {
+            //关机
+            GPIO_SetBits(GPIOB, GPIO_Pin_12);
+            GPIO_ResetBits(GPIOB, GPIO_Pin_13);
+        }
         Show_Gradienter_UI();
     }
 }

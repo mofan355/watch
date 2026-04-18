@@ -22,11 +22,12 @@ int main(void)
 		else if(clkflag1==2){SettingPage();}
 	}
 }
-void TIM2_IRQHandler(void)//10ms触发一次
+void TIM2_IRQHandler(void)//10ms触发一�?
 {
 	if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
 	{
 		Key_Tick();
+		Key3_Tick();
 		StopWatch_Tick();
 		Dino_Tick();
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);

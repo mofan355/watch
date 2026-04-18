@@ -39,3 +39,4 @@
 .\objects\menu.o: Hardware\MPU6050.h
 .\objects\menu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 .\objects\menu.o: .\Game\dino.h
+.\objects\menu.o: Hardware\AD.h

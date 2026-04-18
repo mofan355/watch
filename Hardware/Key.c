@@ -57,3 +57,16 @@ void Key_Tick(void)
 	}
 }
 
+void Key3_Tick(void)
+{
+	static uint8_t Key3_Count=0;
+    if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)==0)
+	{
+		if(Key3_Count++>200)
+		{
+			Key_Num=4;
+			Key3_Count=0;
+		}
+	}
+	if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)==1) Key3_Count=0;
+}

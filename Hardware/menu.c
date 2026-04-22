@@ -250,9 +250,9 @@ void Menu(void)
         }
         else if(KeyNum==4)
         {
-            //关机
-            GPIO_SetBits(GPIOB, GPIO_Pin_12);
-            GPIO_ResetBits(GPIOB, GPIO_Pin_13);
+            //关机，暂时用led模拟
+            GPIO_SetBits(GPIOB, GPIO_Pin_12);//断开ADC检测电压电路电源
+            GPIO_ResetBits(GPIOB, GPIO_Pin_13);//切断电源输入
         }
         
         if(menu_flag_temp==1&&DirectFlag==2) Set_Selection(move_flag,6,0);

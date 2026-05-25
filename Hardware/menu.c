@@ -78,6 +78,7 @@ int First_Page_Clock(void)
     while(1)
     {
         KeyNum = Key_GetNum();
+		//用于led模拟开机时,避免误判
         if(KeyNum == 1)//上一项
         {
             clkflag--;
@@ -90,32 +91,41 @@ int First_Page_Clock(void)
         }
         else if(KeyNum == 3)//确定
         {
-            OLED_Clear();
-            OLED_Update();
+			OLED_Clear();
+			OLED_Update();
             return clkflag;
         }
         else if(KeyNum==4)
         {
-            //关机
+            //关机状态,用led灯模拟
             GPIO_SetBits(GPIOB, GPIO_Pin_12);
             GPIO_ResetBits(GPIOB, GPIO_Pin_13);
         }
-
-        switch(clkflag)
-        {
-            case 1:
-                Show_Clock_UI();
-                OLED_ReverseArea(0,48,32,16);
-                OLED_Update();
-                break;
-            case 2:
-                Show_Clock_UI();
-                OLED_ReverseArea(96,48,32,16);
-                OLED_Update();
-                break;
-            default:
-                break;
-        }
+		
+		if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_12)==1)
+		{
+			OLED_Clear();
+			OLED_Update();
+		}
+        else 
+		{
+			switch(clkflag)
+			{
+				case 1:
+					Show_Clock_UI();
+					OLED_ReverseArea(0,48,32,16);
+					OLED_Update();
+					break;
+				case 2:
+					Show_Clock_UI();
+					OLED_ReverseArea(96,48,32,16);
+					OLED_Update();
+					break;
+				default:
+					break;
+			}
+		}
+		
     }
 }
 

@@ -1,5 +1,6 @@
 #include "stm32f10x.h"                  // Device header
 #include "Delay.h"
+#include "menu.h"
 
 uint8_t Key_Num = 0;
 
@@ -55,18 +56,39 @@ void Key_Tick(void)
 	{
 		Key_Num = PreSta;
 	}
+	//用于led模拟开关机,确保模拟关机后不进行其他操作
+	if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_12)==1)
+	{
+		Key_Num = 0;
+	}
 }
 
 void Key3_Tick(void)
 {
-	static uint8_t Key3_Count=0;
+	static uint16_t Key3_Count=0;
     if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)==0)
 	{
 		if(Key3_Count++>200)
 		{
-			Key_Num=4;
-			Key3_Count=0;
+			//关机
+			if(Key3_Count>300)
+			{
+				Key_Num=4;
+				Key3_Count=0;
+				return;
+			}
+			//开机
+			else if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_12)==1) 
+			{
+				//开机状态
+				GPIO_SetBits(GPIOB, GPIO_Pin_13);
+				GPIO_ResetBits(GPIOB, GPIO_Pin_12);
+//				clear_erro=0;
+				Key3_Count=0;
+				return;
+			}
 		}
+		
 	}
 	if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)==1) Key3_Count=0;
 }

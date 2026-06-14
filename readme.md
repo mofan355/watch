@@ -1,6 +1,6 @@
-本项目使用裸机开发,使用的模块有stm32f103c8t6最小系统板、OLED、mpu6050、按键、LED
-以下为效果图：
-
+本项目意为制作一个智能手表，其中包含的功能有时间年月日时分秒的显示和修改、秒表计时、手电筒、手表姿态检测、小游戏、动态表情包展示、电池电量显示、开关机，参考了https://www.bilibili.com/video/BV1CoGuzEEeN/?spm_id_from=333.1387.favlist.content.click。
+使用裸机开发,使用的模块有stm32f103c8t6最小系统板、OLED、mpu6050、按键、LED
+效果视频（视频中显示不清晰或错位的情况是拍摄导致的并不是代码问题）：https://www.bilibili.com/video/BV1TEJw6qEXQ/?vd_source=7d0d7a57140f407a6a251ec7df2b29df#reply116747864637735
 
 log：
 2026
@@ -23,8 +23,9 @@ log：
     4.18
         1.完善动态表情包功能和水平仪功能
         2.更改key和led的引脚，方便ad引脚使用排线
-        3.添加电量显示功能（使用ADC）和长按两秒确认键（key3）关机功能
+        3.添加电量显示功能（使用ADC；用电位器模拟电量变化）和长按两秒确认键（key3）关机功能
     5.25
         完善led模拟开关机功能，将开机改为长按2秒key3，关机为长按4秒
-硬件原理图：
-    ![alt text](image.png)
+
+若需打印pcb板制作完整的手表可参考下面的硬件原理图：
+    ![硬件原理图](images/HardwareSchematic.png.png)

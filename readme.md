@@ -1,6 +1,6 @@
 本项目意为制作一个智能手表，其中包含的功能有时间年月日时分秒的显示和修改、秒表计时、手电筒、手表姿态检测、小游戏、动态表情包展示、电池电量显示、开关机，参考了https://www.bilibili.com/video/BV1CoGuzEEeN/?spm_id_from=333.1387.favlist.content.click。
 使用裸机开发,使用的模块有stm32f103c8t6最小系统板、OLED、mpu6050、按键、LED
-效果视频（视频中显示不清晰或错位的情况是拍摄导致的并不是代码问题）：https://www.bilibili.com/video/BV1TEJw6qEXQ/?vd_source=7d0d7a57140f407a6a251ec7df2b29df#reply116747864637735
+效果视频（视频中显示不清晰、闪屏或错位的情况是拍摄导致的并不是代码问题）：https://www.bilibili.com/video/BV1TEJw6qEXQ/?vd_source=7d0d7a57140f407a6a251ec7df2b29df#reply116747864637735
 
 log：
 2026

@@ -2,6 +2,9 @@
 使用裸机开发,使用的模块有stm32f103c8t6最小系统板、OLED、mpu6050、按键、LED
 效果视频（视频中显示不清晰、闪屏或错位的情况是拍摄导致的并不是代码问题）：https://www.bilibili.com/video/BV1TEJw6qEXQ/?vd_source=7d0d7a57140f407a6a251ec7df2b29df#reply116747864637735
 
+![初始界面效果1](images/watch1.jpg)
+![初始界面效果2](images/watch2.jpg)
+
 log：
 2026
     4.13
